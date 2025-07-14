@@ -4,7 +4,14 @@ import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../context/shopContext";
 const Navbar = () => { 
   const [visible, setVisible] = useState(false);
-  const {setShowSearch, getCartCount } =useContext(ShopContext)
+  const {setShowSearch, getCartCount,navigate,token,setToken,setCartItems } = useContext(ShopContext)
+  const logout =()=>{
+      navigate('/login')
+    localStorage.removeItem('token')
+    setToken('')
+    setCartItems({})
+  
+  }
   return (
     <div className="flex items-center justify-between py-5 font-medium">
       <Link to='/'><img src={assets.logo} className="w-36" alt="" /></Link>
@@ -28,22 +35,23 @@ const Navbar = () => {
       </ul>
 
       <div className="flex items-center gap-6">
+
         <img onClick={()=>setShowSearch(true)} src={assets.search_icon} alt="" className="w-5 cursor-pointer" />
 
         <div className="group relative">
-        <Link to ={'/login'} > <img
-            src={assets.profile_icon}
+       
+        <img onClick={()=> token ? null: navigate('/login')  } src={assets.profile_icon}
             className="w-5 cursor-pointer"
-            alt=""
-          /></Link>
-
-          <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-0">
+            alt=""/>
+{/* Dropdown menu  */}
+         {token && 
+          <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-0 bg-white rounded-md">
             <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-state-100 text-gray-500 rounded">
               <p className="cursor-pointer hover:text-black">My profile</p>
-              <p className="cursor-pointer hover:text-black">Orders</p>
-              <p className="cursor-pointer hover:text-black">Logout</p>
+              <p onClick={()=>navigate('/order')} className="cursor-pointer hover:text-black">Orders</p>
+              <p onClick={logout} className="cursor-pointer hover:text-black">Logout</p>
             </div>
-          </div>
+          </div>}
         </div>
 
         <Link to="/cart" className="relative">

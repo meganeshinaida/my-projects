@@ -17,7 +17,7 @@ const Collection = () => {
     } else {
       setCategory((prev) => [...prev, e.target.value]);
     }
-  };
+  };   
 
   const toggleSubCategory = (e) => {
     if (subCategory.includes(e.target.value)) {
@@ -48,9 +48,9 @@ const Collection = () => {
   const sortProduct = () => {
     let fpCopy = filterProducts.slice();
     switch (sortType) {
-      case "low-hig":
+      case "low-high":
         setFilterProducts(fpCopy.sort((a, b) => a.price - b.price));
-        break;
+        break; 
       case "high-low":
         setFilterProducts(fpCopy.sort((a, b) => b.price - a.price));
         break;
