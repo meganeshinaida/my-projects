@@ -35,6 +35,16 @@ const ShopContextProvider = (props) => {
       cartData[ItemId][size] = 1;
     }
     setCartItems(cartData);
+    if(token){
+
+      try {
+        await axios.post(backendUrl +'/api/cart/add',{ItemId,size},{headers:{token}})
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message)
+        
+      }
+    }
   };
   const getCartCount = () => {
     let totalCount = 0;
@@ -54,6 +64,14 @@ const ShopContextProvider = (props) => {
     let cartData = structuredClone(cartItems);
     cartData[ItemId][size] = quantity;
     setCartItems(cartData);
+    if (token) {
+      try {
+        await axios.post(backendUrl + '/api/cart/update',{ItemId, size, quantity},{headers:{token}})
+      } catch (error) {
+         console.log(error);
+        toast.error(error.message)
+      }
+    }
   };
   const getCartAmount = () => {
     let totalAmount = 0;
@@ -65,7 +83,8 @@ const ShopContextProvider = (props) => {
             totalAmount += itemInfo.price * cartItems[items][item];
           }
         } catch (error) {
-          console.log();
+          console.log(error);
+              toast.error(error.message)
         }
       }
     }
@@ -84,12 +103,26 @@ const ShopContextProvider = (props) => {
       toast.error(error.message)
     }
   };
+  const getUserCart =async(token)=>{
+try {
+  const response =await axios.post(backendUrl + '/api/cart/get',{},{headers:{token}})
+  if (response.data.success) {
+    setCartItems(response.data.cartData)
+    
+  }
+} catch (error) {
+   console.log(error);
+        toast.error(error.message)
+  
+}
+  }
   useEffect(() => {
     getProductData();
   }, []);
   useEffect(()=>{
 if(!token &&localStorage.getItem('token')){
 setToken(localStorage.getItem('token'))
+getUserCart(localStorage.getItem('token'))
 }
   },[])
   const value = {
@@ -101,7 +134,7 @@ setToken(localStorage.getItem('token'))
     showSearch,
     setShowSearch,
     cartItems,
-    addToCart,
+    addToCart,setCartItems,
     getCartCount,
     updateQuantity,
     getCartAmount,
